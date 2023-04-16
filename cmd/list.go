@@ -233,7 +233,7 @@ func (cooked cookedListCmdArgs) HandleListContainerCommand() (err error) {
 	traverser, err := InitResourceTraverser(source, cooked.location, &ctx, &credentialInfo, common.ESymlinkHandlingType.Skip(), nil,
 		true, false, false, common.EPermanentDeleteOption.None(), func(common.EntityType) {},
 		nil, false, common.ESyncHashType.None(), common.EPreservePermissionsOption.None(), 
-        pipeline.LogNone, common.CpkOptions{}, nil /* errorChannel */, false)
+        pipeline.LogNone, common.CpkOptions{}, nil /* errorChannel */, false, nil)
 
 	if err != nil {
 		return fmt.Errorf("failed to initialize traverser: %s", err.Error())

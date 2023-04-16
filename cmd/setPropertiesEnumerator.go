@@ -52,7 +52,7 @@ func setPropertiesEnumerator(cca *CookedCopyCmdArgs) (enumerator *CopyEnumerator
 		cca.ListOfFilesChannel, cca.Recursive, false, cca.IncludeDirectoryStubs,
 		cca.permanentDeleteOption, func(common.EntityType) {}, cca.ListOfVersionIDs, false,
 		common.ESyncHashType.None(), common.EPreservePermissionsOption.None(), azcopyLogVerbosity.ToPipelineLogLevel(),
-        cca.CpkOptions, nil /* errorChannel */, cca.StripTopDir)
+        cca.CpkOptions, nil /* errorChannel */, cca.StripTopDir, nil)
 
 	// report failure to create traverser
 	if err != nil {

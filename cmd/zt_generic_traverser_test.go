@@ -100,6 +100,7 @@ func (s *genericTraverserSuite) TestLocalWildcardOverlap(c *chk.C) {
 		common.CpkOptions{},
 		nil,
 		true,
+		nil
 		)
 	c.Assert(err, chk.IsNil)
 
