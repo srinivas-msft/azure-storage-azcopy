@@ -23,6 +23,7 @@ package cmd
 import (
 	"context"
 	"fmt"
+	"sync"
 	"github.com/Azure/azure-pipeline-go/pipeline"
 	"net/url"
 
@@ -48,9 +49,15 @@ func (l *listTraverser) IsDirectory(bool) (bool, error) {
 // Behavior demonstrated: https://play.golang.org/p/OYdvLmNWgwO
 func (l *listTraverser) Traverse(preprocessor objectMorpher, processor objectProcessor, filters []ObjectFilter) (err error) {
 	// read a channel until it closes to get a list of objects
+	maxParallelTraversers := make(chan struct{}, 64)
+	var mutex sync.Mutex
+	serialProcessor := func(storedObject StoredObject) error {
+		mutex.Lock()
+		defer mutex.Unlock()
+		return processor(storedObject)
+	}
 
-	childPath, ok := <-l.listReader
-	for ; ok; childPath, ok = <-l.listReader {
+	childTraverser := func(childPath string) {
 
 		// fetch an appropriate traverser, and go through the child path, which could be
 		//   1. a single entity
@@ -58,17 +65,14 @@ func (l *listTraverser) Traverse(preprocessor objectMorpher, processor objectPro
 		childTraverser, err := l.childTraverserGenerator(childPath)
 		if err != nil {
 			glcm.Info(fmt.Sprintf("Skipping %s due to error %s", childPath, err))
-			continue
+			return
 		}
-/*
-dir1/ ---- f1, f2
-f1
-*/
+
 		// listTraverser will only ever execute on the source
 
 		isDir, _ := childTraverser.IsDirectory(true)
 		if !l.recursive && isDir {
-			continue // skip over directories
+			return // skip over directories
 		}
 
 		// when scanning a child path under the parent, we need to make sure that the relative paths of
@@ -85,10 +89,18 @@ f1
 		}
 		preProcessorForThisChild := preprocessor.FollowedBy(childPreProcessor)
 
-		err = childTraverser.Traverse(preProcessorForThisChild, processor, filters)
+		err = childTraverser.Traverse(preProcessorForThisChild, serialProcessor, filters)
 		if err != nil {
 			glcm.Info(fmt.Sprintf("Skipping %s as it cannot be scanned due to error: %s", childPath, err))
 		}
+
+		//release a slot
+		<-maxParallelTraversers
+	}
+
+	for childPath := range l.listReader {
+		maxParallelTraversers <- struct{}{}
+		childTraverser(childPath)
 	}
 
 	return nil
