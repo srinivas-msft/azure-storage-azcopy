@@ -66,7 +66,7 @@ func (cca *cookedSyncCmdArgs) initEnumerator(ctx context.Context) (enumerator *s
 				atomic.AddUint64(&cca.atomicSourceFilesScanned, 1)
 			}
 		}, nil, cca.s2sPreserveBlobTags, cca.compareHash, cca.preservePermissions, azcopyLogVerbosity.ToPipelineLogLevel(),
-        cca.cpkOptions, nil /* errorChannel */, false)
+        cca.cpkOptions, nil /* errorChannel */, false, nil)
 
 	if err != nil {
 		return nil, err
@@ -88,7 +88,7 @@ func (cca *cookedSyncCmdArgs) initEnumerator(ctx context.Context) (enumerator *s
 			atomic.AddUint64(&cca.atomicDestinationFilesScanned, 1)
 		}
 	}, nil, cca.s2sPreserveBlobTags, cca.compareHash, cca.preservePermissions, azcopyLogVerbosity.ToPipelineLogLevel(),
-    cca.cpkOptions, nil /* errorChannel */, false)
+    cca.cpkOptions, nil /* errorChannel */, false, nil)
 	if err != nil {
 		return nil, err
 	}

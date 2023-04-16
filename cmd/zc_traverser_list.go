@@ -48,6 +48,7 @@ func (l *listTraverser) IsDirectory(bool) (bool, error) {
 // Behavior demonstrated: https://play.golang.org/p/OYdvLmNWgwO
 func (l *listTraverser) Traverse(preprocessor objectMorpher, processor objectProcessor, filters []ObjectFilter) (err error) {
 	// read a channel until it closes to get a list of objects
+
 	childPath, ok := <-l.listReader
 	for ; ok; childPath, ok = <-l.listReader {
 
@@ -93,7 +94,14 @@ func newListTraverser(parent common.ResourceString, parentType common.Location, 
 	ctx *context.Context, recursive bool, handleSymlinks common.SymlinkHandlingType, getProperties bool, listChan chan string,
 	includeDirectoryStubs bool, incrementEnumerationCounter enumerationCounterFunc, s2sPreserveBlobTags bool,
 	logLevel pipeline.LogLevel, cpkOptions common.CpkOptions, syncHashType common.SyncHashType, preservePermissions common.PreservePermissionsOption) ResourceTraverser {
+	
+	p, err := InitPipeline(*ctx, parentType, *credential, logLevel)
+
 	traverserGenerator := func(relativeChildPath string) (ResourceTraverser, error) {
+		if err != nil {
+			return nil, err
+		}
+
 		source := parent.Clone()
 		if parentType != common.ELocation.Local() {
 			// assume child path is not URL-encoded yet, this is consistent with the behavior of previous implementation
@@ -108,7 +116,7 @@ func newListTraverser(parent common.ResourceString, parentType common.Location, 
 		// Construct a traverser that goes through the child
 		traverser, err := InitResourceTraverser(source, parentType, ctx, credential, handleSymlinks,
 			nil, recursive, getProperties, includeDirectoryStubs, common.EPermanentDeleteOption.None(), incrementEnumerationCounter,
-			nil, s2sPreserveBlobTags, syncHashType, preservePermissions, logLevel, cpkOptions, nil /* errorChannel */, false)
+			nil, s2sPreserveBlobTags, syncHashType, preservePermissions, logLevel, cpkOptions, nil /* errorChannel */, false, &p)
 		if err != nil {
 			return nil, err
 		}
