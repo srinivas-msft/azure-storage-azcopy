@@ -165,6 +165,7 @@ func NewBlobPipeline(c azblob.Credential, o azblob.PipelineOptions, r XferRetryO
 		NewVersionPolicyFactory(),
 		NewRequestLogPolicyFactory(RequestLogOptions{LogWarningIfTryOverThreshold: o.RequestLog.LogWarningIfTryOverThreshold}),
 		newXferStatsPolicyFactory(statsAcc),
+		NewInjectErrorPolicyFactory(),
 	}
 	return pipeline.NewPipeline(f, pipeline.Options{HTTPSender: newAzcopyHTTPClientFactory(client), Log: o.Log})
 }
