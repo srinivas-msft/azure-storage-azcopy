@@ -37,7 +37,7 @@ stages:
             azcopy --version
           displayName: 'Build Azcopy'
 
-- stage: Blob2Blob_Large Files
+- stage: Blob2Blob_LargeFiles
   jobs:
     - job: PerformanceTest
       timeoutInMinutes: 720
