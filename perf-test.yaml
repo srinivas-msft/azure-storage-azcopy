@@ -36,7 +36,7 @@ stages:
             go build -o $GOROOT/bin/azcopy
             azcopy --version
           displayName: 'Build Azcopy'
-stages:
+
 - stage: Blob2Blob - Large Files
   jobs:
     - job: PerformanceTest
@@ -68,7 +68,7 @@ stages:
             AZCOPY_LOG_LOCATION: $(Build.ArtifactStagingDirectory)/logs
             AZCOPY_CONCURRENCY_VALUE: "256"
             AZCOPY_SHOW_PERF_STATES: "1"
-stages:
+
 - stage: Blob2Blob - Small to Medium sized files
   jobs:
     - job: PerformanceTest
@@ -100,7 +100,7 @@ stages:
             AZCOPY_LOG_LOCATION: $(Build.ArtifactStagingDirectory)/logs
             AZCOPY_CONCURRENCY_VALUE: "256"
             AZCOPY_SHOW_PERF_STATES: "1"
-stages:
+
 - stage: Blob2Blob - Small Files
   jobs:
     - job: PerformanceTest
@@ -132,7 +132,7 @@ stages:
             AZCOPY_LOG_LOCATION: $(Build.ArtifactStagingDirectory)/logs
             AZCOPY_CONCURRENCY_VALUE: "256"
             AZCOPY_SHOW_PERF_STATES: "1"
-stages:
+
 - stage: Download - Large files
   jobs:
     - job: PerformanceTest
@@ -164,7 +164,7 @@ stages:
             AZCOPY_MSI_CLIENT_ID: $(AZCOPY_MSI_CLIENT_ID)
             AZCOPY_SHOW_PERF_STATES: "1"
             AZCOPY_LOG_LOCATION: $(Build.ArtifactStagingDirectory)/logs
-stages:
+
 - stage: Upload - Large files
   jobs:
     - job: PerformanceTest
@@ -196,7 +196,7 @@ stages:
             AZCOPY_MSI_CLIENT_ID: $(AZCOPY_MSI_CLIENT_ID)
             AZCOPY_SHOW_PERF_STATES: "1"
             AZCOPY_LOG_LOCATION: $(Build.ArtifactStagingDirectory)/logs
-stages:
+
 - stage: Download - Small to Medium sized files
   jobs:
     - job: PerformanceTest
@@ -228,7 +228,7 @@ stages:
             AZCOPY_MSI_CLIENT_ID: $(AZCOPY_MSI_CLIENT_ID)
             AZCOPY_SHOW_PERF_STATES: "1"
             AZCOPY_LOG_LOCATION: $(Build.ArtifactStagingDirectory)/logs
-stages:
+
 - stage: Upload - Small to Medium sized files
   jobs:
     - job: PerformanceTest
@@ -260,7 +260,7 @@ stages:
             AZCOPY_MSI_CLIENT_ID: $(AZCOPY_MSI_CLIENT_ID)
             AZCOPY_SHOW_PERF_STATES: "1"
             AZCOPY_LOG_LOCATION: $(Build.ArtifactStagingDirectory)/logs
-stages:
+
 - stage: Download - Small Files
   jobs:
     - job: PerformanceTest
@@ -292,7 +292,7 @@ stages:
             AZCOPY_MSI_CLIENT_ID: $(AZCOPY_MSI_CLIENT_ID)
             AZCOPY_SHOW_PERF_STATES: "1"
             AZCOPY_LOG_LOCATION: $(Build.ArtifactStagingDirectory)/logs
-stages:
+
 - stage: Upload - Small Files
   jobs:
     - job: PerformanceTest
@@ -324,7 +324,7 @@ stages:
             AZCOPY_MSI_CLIENT_ID: $(AZCOPY_MSI_CLIENT_ID)
             AZCOPY_SHOW_PERF_STATES: "1"
             AZCOPY_LOG_LOCATION: $(Build.ArtifactStagingDirectory)/logs
-stages:
+
 - stage: Publish Artifacts
   jobs:
     - job: PerformanceTest
