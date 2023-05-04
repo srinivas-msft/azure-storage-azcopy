@@ -2,7 +2,7 @@ trigger: none
 pr: none
 
 stages:
-- stage: Smallfiles
+- stage: Init
   jobs:
     - job: PerformanceTest
       timeoutInMinutes: 720
@@ -36,7 +36,28 @@ stages:
             go build -o $GOROOT/bin/azcopy
             azcopy --version
           displayName: 'Build Azcopy'
+stages:
+- stage: Blob2Blob - Large Files
+  jobs:
+    - job: PerformanceTest
+      timeoutInMinutes: 720
+      strategy:
+        matrix:
+          Ubuntu-22:
+            imageName: "azcopyPerfTestUbuntu22.04"
+            Description: "AzCopy Perf Test"
 
+      pool:
+        name: "AzCopyPerfTestUbuntu"
+        demands:
+          - ImageOverride -equals $(imageName)
+
+      variables:
+      - group: AzCopyPerfTestTargets
+      - name: localPath
+        value: "/mnt/storage"
+
+      steps:
         - script: |
             time azcopy copy $(Blob2BlobLargeFilesSrc) $(Blob2BlobLargeFilesDst) --recursive --block-size-mb=128 --log-level=ERROR --cap-mbps=40000
           displayName: 'Blob2Blob - Large Files'
@@ -47,7 +68,28 @@ stages:
             AZCOPY_LOG_LOCATION: $(Build.ArtifactStagingDirectory)/logs
             AZCOPY_CONCURRENCY_VALUE: "256"
             AZCOPY_SHOW_PERF_STATES: "1"
+stages:
+- stage: Blob2Blob - Small to Medium sized files
+  jobs:
+    - job: PerformanceTest
+      timeoutInMinutes: 720
+      strategy:
+        matrix:
+          Ubuntu-22:
+            imageName: "azcopyPerfTestUbuntu22.04"
+            Description: "AzCopy Perf Test"
 
+      pool:
+        name: "AzCopyPerfTestUbuntu"
+        demands:
+          - ImageOverride -equals $(imageName)
+
+      variables:
+      - group: AzCopyPerfTestTargets
+      - name: localPath
+        value: "/mnt/storage"
+
+      steps:
         - script: |
             time azcopy copy $(Blob2BlobSmallAndMedFilesSrc) $(Blob2BlobSmallAndMedFilesDst) --recursive --block-size-mb=128 --log-level=ERROR
           displayName: 'Blob2Blob - Small to Medium sized files'
@@ -58,7 +100,28 @@ stages:
             AZCOPY_LOG_LOCATION: $(Build.ArtifactStagingDirectory)/logs
             AZCOPY_CONCURRENCY_VALUE: "256"
             AZCOPY_SHOW_PERF_STATES: "1"
+stages:
+- stage: Blob2Blob - Small Files
+  jobs:
+    - job: PerformanceTest
+      timeoutInMinutes: 720
+      strategy:
+        matrix:
+          Ubuntu-22:
+            imageName: "azcopyPerfTestUbuntu22.04"
+            Description: "AzCopy Perf Test"
 
+      pool:
+        name: "AzCopyPerfTestUbuntu"
+        demands:
+          - ImageOverride -equals $(imageName)
+
+      variables:
+      - group: AzCopyPerfTestTargets
+      - name: localPath
+        value: "/mnt/storage"
+
+      steps:
         - script: |
             time azcopy copy $(Blob2BlobSmallFilesSrc) $(Blob2BlobSmallFilesDst) --recursive --check-length=false --log-level=ERROR
           displayName: 'Blob2Blob - Small Files'
@@ -69,7 +132,28 @@ stages:
             AZCOPY_LOG_LOCATION: $(Build.ArtifactStagingDirectory)/logs
             AZCOPY_CONCURRENCY_VALUE: "256"
             AZCOPY_SHOW_PERF_STATES: "1"
+stages:
+- stage: Download - Large files
+  jobs:
+    - job: PerformanceTest
+      timeoutInMinutes: 720
+      strategy:
+        matrix:
+          Ubuntu-22:
+            imageName: "azcopyPerfTestUbuntu22.04"
+            Description: "AzCopy Perf Test"
 
+      pool:
+        name: "AzCopyPerfTestUbuntu"
+        demands:
+          - ImageOverride -equals $(imageName)
+
+      variables:
+      - group: AzCopyPerfTestTargets
+      - name: localPath
+        value: "/mnt/storage"
+
+      steps:
         - script: |
             sudo mkdir -m 777 $(localPath)/largeFiles/
             time azcopy copy $(Blob2BlobLargeFilesSrc) /dev/null --recursive --log-level=ERROR
@@ -80,7 +164,28 @@ stages:
             AZCOPY_MSI_CLIENT_ID: $(AZCOPY_MSI_CLIENT_ID)
             AZCOPY_SHOW_PERF_STATES: "1"
             AZCOPY_LOG_LOCATION: $(Build.ArtifactStagingDirectory)/logs
+stages:
+- stage: Upload - Large files
+  jobs:
+    - job: PerformanceTest
+      timeoutInMinutes: 720
+      strategy:
+        matrix:
+          Ubuntu-22:
+            imageName: "azcopyPerfTestUbuntu22.04"
+            Description: "AzCopy Perf Test"
 
+      pool:
+        name: "AzCopyPerfTestUbuntu"
+        demands:
+          - ImageOverride -equals $(imageName)
+
+      variables:
+      - group: AzCopyPerfTestTargets
+      - name: localPath
+        value: "/mnt/storage"
+
+      steps:
         - script: |
             time azcopy bench $(Blob2BlobLargeFilesDst) --log-level=ERROR --size-per-file=50G --file-count=50 --put-md5=false --delete-test-data=false
             sudo rm -rf $(localPath)/*
@@ -91,7 +196,28 @@ stages:
             AZCOPY_MSI_CLIENT_ID: $(AZCOPY_MSI_CLIENT_ID)
             AZCOPY_SHOW_PERF_STATES: "1"
             AZCOPY_LOG_LOCATION: $(Build.ArtifactStagingDirectory)/logs
+stages:
+- stage: Download - Small to Medium sized files
+  jobs:
+    - job: PerformanceTest
+      timeoutInMinutes: 720
+      strategy:
+        matrix:
+          Ubuntu-22:
+            imageName: "azcopyPerfTestUbuntu22.04"
+            Description: "AzCopy Perf Test"
 
+      pool:
+        name: "AzCopyPerfTestUbuntu"
+        demands:
+          - ImageOverride -equals $(imageName)
+
+      variables:
+      - group: AzCopyPerfTestTargets
+      - name: localPath
+        value: "/mnt/storage"
+
+      steps:
         - script: |
             sudo mkdir -m 777 $(localPath)/smallToMediumFiles/
             time azcopy copy $(Blob2BlobSmallAndMedFilesSrc) $(localPath)/smallToMediumFiles --recursive --log-level=ERROR
@@ -102,7 +228,28 @@ stages:
             AZCOPY_MSI_CLIENT_ID: $(AZCOPY_MSI_CLIENT_ID)
             AZCOPY_SHOW_PERF_STATES: "1"
             AZCOPY_LOG_LOCATION: $(Build.ArtifactStagingDirectory)/logs
+stages:
+- stage: Upload - Small to Medium sized files
+  jobs:
+    - job: PerformanceTest
+      timeoutInMinutes: 720
+      strategy:
+        matrix:
+          Ubuntu-22:
+            imageName: "azcopyPerfTestUbuntu22.04"
+            Description: "AzCopy Perf Test"
 
+      pool:
+        name: "AzCopyPerfTestUbuntu"
+        demands:
+          - ImageOverride -equals $(imageName)
+
+      variables:
+      - group: AzCopyPerfTestTargets
+      - name: localPath
+        value: "/mnt/storage"
+
+      steps:
         - script: |
             time azcopy copy $(localPath)/smallToMediumFiles/ $(Blob2BlobSmallAndMedFilesDst) --recursive --log-level=ERROR
             sudo rm -rf $(localPath)/*
@@ -113,7 +260,28 @@ stages:
             AZCOPY_MSI_CLIENT_ID: $(AZCOPY_MSI_CLIENT_ID)
             AZCOPY_SHOW_PERF_STATES: "1"
             AZCOPY_LOG_LOCATION: $(Build.ArtifactStagingDirectory)/logs
+stages:
+- stage: Download - Small Files
+  jobs:
+    - job: PerformanceTest
+      timeoutInMinutes: 720
+      strategy:
+        matrix:
+          Ubuntu-22:
+            imageName: "azcopyPerfTestUbuntu22.04"
+            Description: "AzCopy Perf Test"
 
+      pool:
+        name: "AzCopyPerfTestUbuntu"
+        demands:
+          - ImageOverride -equals $(imageName)
+
+      variables:
+      - group: AzCopyPerfTestTargets
+      - name: localPath
+        value: "/mnt/storage"
+
+      steps:
         - script: |
             sudo mkdir -m 777 $(localPath)/smallFiles/
             time azcopy copy $(Blob2BlobSmallFilesSrc) /dev/null --recursive --check-length=false --log-level=ERROR
@@ -124,7 +292,28 @@ stages:
             AZCOPY_MSI_CLIENT_ID: $(AZCOPY_MSI_CLIENT_ID)
             AZCOPY_SHOW_PERF_STATES: "1"
             AZCOPY_LOG_LOCATION: $(Build.ArtifactStagingDirectory)/logs
+stages:
+- stage: Upload - Small Files
+  jobs:
+    - job: PerformanceTest
+      timeoutInMinutes: 720
+      strategy:
+        matrix:
+          Ubuntu-22:
+            imageName: "azcopyPerfTestUbuntu22.04"
+            Description: "AzCopy Perf Test"
 
+      pool:
+        name: "AzCopyPerfTestUbuntu"
+        demands:
+          - ImageOverride -equals $(imageName)
+
+      variables:
+      - group: AzCopyPerfTestTargets
+      - name: localPath
+        value: "/mnt/storage"
+
+      steps:
         - script: |
             time azcopy bench $(Blob2BlobSmallFilesDst) --size-per-file=5k --file-count=8000000 --check-length=false --log-level=ERROR --delete-test-data=false
             sudo rm -rf $(localPath)/*
@@ -135,7 +324,28 @@ stages:
             AZCOPY_MSI_CLIENT_ID: $(AZCOPY_MSI_CLIENT_ID)
             AZCOPY_SHOW_PERF_STATES: "1"
             AZCOPY_LOG_LOCATION: $(Build.ArtifactStagingDirectory)/logs
+stages:
+- stage: Publish Artifacts
+  jobs:
+    - job: PerformanceTest
+      timeoutInMinutes: 720
+      strategy:
+        matrix:
+          Ubuntu-22:
+            imageName: "azcopyPerfTestUbuntu22.04"
+            Description: "AzCopy Perf Test"
 
+      pool:
+        name: "AzCopyPerfTestUbuntu"
+        demands:
+          - ImageOverride -equals $(imageName)
+
+      variables:
+      - group: AzCopyPerfTestTargets
+      - name: localPath
+        value: "/mnt/storage"
+
+      steps:
         - task: PublishBuildArtifacts@1
           condition: always()
           inputs:
