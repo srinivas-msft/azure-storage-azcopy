@@ -37,7 +37,7 @@ stages:
             azcopy --version
           displayName: 'Build Azcopy'
 
-- stage: Blob2Blob-Large Files
+- stage: Blob2Blob_Large Files
   jobs:
     - job: PerformanceTest
       timeoutInMinutes: 720
@@ -69,7 +69,7 @@ stages:
             AZCOPY_CONCURRENCY_VALUE: "256"
             AZCOPY_SHOW_PERF_STATES: "1"
 
-- stage: Blob2Blob-SmallToMediumSizedFiles
+- stage: Blob2Blob_SmallToMediumSizedFiles
   jobs:
     - job: PerformanceTest
       timeoutInMinutes: 720
@@ -101,7 +101,7 @@ stages:
             AZCOPY_CONCURRENCY_VALUE: "256"
             AZCOPY_SHOW_PERF_STATES: "1"
 
-- stage: Blob2Blob-SmallFiles
+- stage: Blob2Blob_SmallFiles
   jobs:
     - job: PerformanceTest
       timeoutInMinutes: 720
@@ -133,7 +133,7 @@ stages:
             AZCOPY_CONCURRENCY_VALUE: "256"
             AZCOPY_SHOW_PERF_STATES: "1"
 
-- stage: Download-LargeFiles
+- stage: Download_LargeFiles
   jobs:
     - job: PerformanceTest
       timeoutInMinutes: 720
@@ -165,7 +165,7 @@ stages:
             AZCOPY_SHOW_PERF_STATES: "1"
             AZCOPY_LOG_LOCATION: $(Build.ArtifactStagingDirectory)/logs
 
-- stage: Upload-LargeFiles
+- stage: Upload_LargeFiles
   jobs:
     - job: PerformanceTest
       timeoutInMinutes: 720
@@ -197,7 +197,7 @@ stages:
             AZCOPY_SHOW_PERF_STATES: "1"
             AZCOPY_LOG_LOCATION: $(Build.ArtifactStagingDirectory)/logs
 
-- stage: Download-SmallToMediumSizedFiles
+- stage: Download_SmallToMediumSizedFiles
   jobs:
     - job: PerformanceTest
       timeoutInMinutes: 720
@@ -229,7 +229,7 @@ stages:
             AZCOPY_SHOW_PERF_STATES: "1"
             AZCOPY_LOG_LOCATION: $(Build.ArtifactStagingDirectory)/logs
 
-- stage: Upload-SmallToMediumSizedFiles
+- stage: Upload_SmallToMediumSizedFiles
   jobs:
     - job: PerformanceTest
       timeoutInMinutes: 720
@@ -261,7 +261,7 @@ stages:
             AZCOPY_SHOW_PERF_STATES: "1"
             AZCOPY_LOG_LOCATION: $(Build.ArtifactStagingDirectory)/logs
 
-- stage: Download-SmallFiles
+- stage: Download_SmallFiles
   jobs:
     - job: PerformanceTest
       timeoutInMinutes: 720
@@ -293,7 +293,7 @@ stages:
             AZCOPY_SHOW_PERF_STATES: "1"
             AZCOPY_LOG_LOCATION: $(Build.ArtifactStagingDirectory)/logs
 
-- stage: Upload-SmallFiles
+- stage: Upload_SmallFiles
   jobs:
     - job: PerformanceTest
       timeoutInMinutes: 720
