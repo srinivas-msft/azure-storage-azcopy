@@ -7,7 +7,6 @@ import (
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore/policy"
 	azruntime "github.com/Azure/azure-sdk-for-go/sdk/azcore/runtime"
 	"github.com/Azure/azure-sdk-for-go/sdk/storage/azblob/blob"
-	"github.com/Azure/azure-storage-file-go/azfile"
 	"mime"
 	"net"
 	"net/http"
@@ -190,29 +189,6 @@ func NewBlobFSPipeline(c azbfs.Credential, o azbfs.PipelineOptions, r XferRetryO
 		}),
 		newXferStatsPolicyFactory(statsAcc))
 
-	return pipeline.NewPipeline(f, pipeline.Options{HTTPSender: newAzcopyHTTPClientFactory(client), Log: o.Log})
-}
-
-// NewFilePipeline creates a Pipeline using the specified credentials and options.
-func NewFilePipeline(c azfile.Credential, o azfile.PipelineOptions, r azfile.RetryOptions, p pacer, client *http.Client, statsAcc *PipelineNetworkStats) pipeline.Pipeline {
-	if c == nil {
-		panic("c can't be nil")
-	}
-	// Closest to API goes first; closest to the wire goes last
-	f := []pipeline.Factory{
-		azfile.NewTelemetryPolicyFactory(o.Telemetry),
-		azfile.NewUniqueRequestIDPolicyFactory(),
-		azfile.NewRetryPolicyFactory(r),       // actually retry the operation
-		newV1RetryNotificationPolicyFactory(), // record that a retry status was returned
-		c,
-		pipeline.MethodFactoryMarker(), // indicates at what stage in the pipeline the method factory is invoked
-		NewVersionPolicyFactory(),
-		NewRequestLogPolicyFactory(RequestLogOptions{
-			LogWarningIfTryOverThreshold: o.RequestLog.LogWarningIfTryOverThreshold,
-			SyslogDisabled:               common.IsForceLoggingDisabled(),
-		}),
-		newXferStatsPolicyFactory(statsAcc),
-	}
 	return pipeline.NewPipeline(f, pipeline.Options{HTTPSender: newAzcopyHTTPClientFactory(client), Log: o.Log})
 }
 
