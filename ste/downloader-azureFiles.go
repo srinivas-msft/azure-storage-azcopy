@@ -81,6 +81,8 @@ func (bd *azureFilesDownloader) preserveAttributes() (stage string, err error) {
 		}
 	}
 
+	//al;fjdalkfjdalkdf
+
 	if info.PreserveSMBInfo {
 		// must be done AFTER we preserve the permissions (else some of the flags/dates set here may be lost)
 		if spdl, ok := interface{}(bd).(smbPropertyAwareDownloader); ok {
