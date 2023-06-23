@@ -1,7 +1,6 @@
 package ste
 
 import (
-	"context"
 	"fmt"
 	"io"
 	"os"
@@ -155,8 +154,8 @@ func localToLocal_file(jptm IJobPartTransferMgr) {
 	//step 7: Create the body for the chunk function
 	body := func() {
 		if info.SourceSize > 0 {
-			bytesWritten, err := copyFile(jptm.Context(), src, dstFile)
-			if err != nil || bytesWritten != fileSize {
+			err = copyFunc(jptm.Context(), fileSize, info.Source, info.Destination, dstFile)
+			if err != nil {
 				//transfer is not successful
 				err = removeFile(info.getDownloadPath())
 				if err != nil {
@@ -171,32 +170,6 @@ func localToLocal_file(jptm IJobPartTransferMgr) {
 	cf := createChunkFunc(true, jptm, common.NewChunkID(src, 0, info.SourceSize), body)
 	jptm.ScheduleChunks(cf)
 
-}
-
-type readerCtx struct {
-	ctx context.Context
-	r   io.Reader
-}
-
-func (r *readerCtx) Read(p []byte) (n int, err error) {
-	if err := r.ctx.Err(); err != nil {
-		return 0, err
-	}
-	return r.r.Read(p)
-}
-func NewReader(ctx context.Context, r io.Reader) io.Reader {
-	return &readerCtx{
-		ctx: ctx,
-		r:   r,
-	}
-}
-func copyFile(ctx context.Context, src string, dstFile io.WriteCloser) (written int64, err error) {
-	source, err := os.Open(src)
-	if err != nil {
-		return 0, err
-	}
-	defer source.Close()
-	return io.Copy(dstFile, NewReader(ctx, source))
 }
 
 func removeFile(dst string) error {
