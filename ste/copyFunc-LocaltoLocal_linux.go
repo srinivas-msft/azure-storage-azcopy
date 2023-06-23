@@ -6,7 +6,7 @@ package ste
 import (
 	"context"
 	"errors"
-	"fmt"
+	"io"
 	"os"
 	"syscall"
 )
@@ -35,7 +35,7 @@ func copyFunc(ctx context.Context, size int64, src, dst string, dstFile io.Write
 			chunkSize = size
 			size = 0
 		} else {
-			chunksize = maxChunkSize
+			chunkSize = maxChunkSize
 			size -= maxChunkSize
 		}
 		written, err := syscall.Sendfile(dst_fd, src_fd, &offset, int(chunkSize))
