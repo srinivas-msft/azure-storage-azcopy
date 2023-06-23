@@ -17,6 +17,7 @@ import (
 // which would require transferring data to and from user space.
 // https://man7.org/linux/man-pages/man2/sendfile.2.html
 func copyFunc(ctx context.Context, size int64, src, dst string, dstFile io.WriteCloser) error {
+	fileSize := size
 	source, err := os.Open(src)
 	if err != nil {
 		return err
@@ -47,7 +48,7 @@ func copyFunc(ctx context.Context, size int64, src, dst string, dstFile io.Write
 		}
 		totalBytesWritten += int64(written)
 	}
-	if totalBytesWritten != size {
+	if totalBytesWritten != fileSize {
 		return errors.New("Bytes copied were less than the source size")
 	}
 	return nil

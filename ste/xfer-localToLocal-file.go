@@ -162,7 +162,6 @@ func localToLocal_file(jptm IJobPartTransferMgr) {
 					jptm.LogSendError(info.Source, info.Destination, "Destination File cannot be deleted"+err.Error(), 0)
 				}
 				jptm.SetStatus(common.ETransferStatus.Failed())
-				jptm.ReportTransferDone()
 			}
 		}
 	}
