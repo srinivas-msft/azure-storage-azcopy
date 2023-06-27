@@ -196,7 +196,9 @@ func copyFile(ctx context.Context, src string, dstFile io.WriteCloser) (written 
 		return 0, err
 	}
 	defer source.Close()
-	return io.Copy(dstFile, NewReader(ctx, source))
+	size := 4 * 1024
+	buf := make([]byte, size)
+	return io.CopyBuffer(dstFile, NewReader(ctx, source), buf)
 }
 
 func removeFile(dst string) error {
