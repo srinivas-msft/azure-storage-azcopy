@@ -29,7 +29,8 @@ func copyFunc(ctx context.Context, size int64, src, dst string, dstFile io.Write
 	var totalBytesWritten int64 = 0
 	//max size that can be transfered using sendFile syscall is 2,147,479,552 bytes (~2.14GB)
 	//So we divide our file into chunks of ~2.14GB and try to call the send
-	var maxChunkSize int64 = 2147479552
+	var maxChunkSize int64 = 64 * 1024 * 1024 // we take this a limit because as there is no significant improvement we see by changing this value
+	// we also need to check whether context is cancelled/not for every chunk.
 	for size != 0 {
 		var chunkSize int64 = 0
 		if size <= maxChunkSize {
@@ -47,6 +48,9 @@ func copyFunc(ctx context.Context, size int64, src, dst string, dstFile io.Write
 			return errors.New("File Corrupted, Retry again")
 		}
 		totalBytesWritten += int64(written)
+		if err := ctx.Err(); err != nil {
+			return err
+		}
 	}
 	if totalBytesWritten != fileSize {
 		return errors.New("Bytes copied were less than the source size")
